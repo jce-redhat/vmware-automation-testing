@@ -1,0 +1,62 @@
+---
+- name: VMware info
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+    - name: Set VCenter parameters
+      ansible.builtin.include_vars: login_info.yml
+
+    # tested with cloud.vm_ops v1.3.0
+    - name: Use info role
+      ansible.builtin.import_role:
+        name: cloud.vmware_ops.info
+      vars:
+        info_license: true
+        info_license_file: /tmp/{{ vcenter_hostname }}-license
+        info_storage: true
+        info_storage_file: /tmp/{{ vcenter_hostname }}-storage
+        info_appliance: true
+        info_appliance_file: /tmp/{{ vcenter_hostname }}-appliance
+        info_guest: true
+        info_guest_file: /tmp/{{ vcenter_hostname }}-guest
+        info_cluster: true
+        info_cluster_file: /tmp/{{ vcenter_hostname }}-cluster
+        info_hostname: "{{ vcenter_hostname }}"
+        info_username: "{{ vcenter_username }}"
+        info_password: "{{ vcenter_password }}"
+        info_validate_certs: false
+
+    - name: Set facts from VMware info files
+      ansible.builtin.set_fact:
+        _vmware_info_{{ item }}: '{{ lookup("file","/tmp/" + vcenter_hostname + "-" + item) | from_json }}'
+      loop:
+        - license
+        - storage
+        - appliance
+        - guest
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: _vmware_info_{{ item }}
+      loop:
+        - license
+        - storage
+        - appliance
+        - guest
+        - cluster
+
+    # apparently the info role stores the data in "private" variables before writing
+    # to the JSON files, why not expose them "publicly" instead and make writing to
+    # a file optional?
+#    - name: Debug
+#      ansible.builtin.debug:
+#        var: __{{ item }}
+#      loop:
+#        - license
+#        - storage_policy
+#        - appliance
+#        - guests
+#        - clusters_info
+
+...

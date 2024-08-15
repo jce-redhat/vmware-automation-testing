@@ -6,7 +6,8 @@ ansible-navigator:
     rotate-artifacts-count: 10
   execution-environment:
     container-engine: podman
-    image: localhost/ee-vmware:latest
+    image: localhost/ee-vmware-testing:latest
+#    image: quay.io/acme_corp/vmware-ee:latest
     pull:
       policy: missing
 #    environment-variables:
