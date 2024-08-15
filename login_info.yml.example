@@ -1,0 +1,6 @@
+---
+vcenter_hostname: "yourexample.redhat.com"
+vcenter_username: "admin@local"
+vcenter_password: "yourpassword"
+
+...

@@ -1,0 +1,6 @@
+---
+collections:
+  - name: vmware.vmware
+  - name: cloud.vmware_ops
+
+...
